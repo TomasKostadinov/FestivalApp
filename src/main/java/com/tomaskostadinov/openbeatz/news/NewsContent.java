@@ -1,4 +1,6 @@
-package com.tomaskostadinov.openbeatz.dummy;
+package com.tomaskostadinov.openbeatz.news;
+
+import com.tomaskostadinov.openbeatz.model.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +18,12 @@ public class NewsContent {
     /**
      * An array of news items.
      */
-    public static final List<NewsItem> ITEMS = new ArrayList<NewsItem>();
+    public static final List<Message> ITEMS = new ArrayList<Message>();
 
     /**
      * A map of news items, by ID.
      */
-    public static final Map<String, NewsItem> ITEM_MAP = new HashMap<String, NewsItem>();
+    public static final Map<String, Message> ITEM_MAP = new HashMap<String, Message>();
 
     private static final int COUNT = 25;
 
@@ -32,14 +34,13 @@ public class NewsContent {
         }
     }
 
-    private static void addItem(NewsItem item) {
+    private static void addItem(Message item) {
         ITEMS.add(item);
-        ITEM_MAP.put(item.id, item);
+        ITEM_MAP.put(item.getType(), item);
     }
 
-    private static NewsItem createNewsItem(int position) {
-        //return new NewsItem(String.valueOf(position), "Item " + position, makeDetails(position));
-        return new NewsItem(String.valueOf(position), "Item " + position, "openbeatz.de", "text", "now");
+    private static Message createNewsItem(int position) {
+        return new Message(String.valueOf(position), "Now", "Lol es geht", "default", "https://connect.nearstage.com/site/assets/files/2181/14195484_1071564426298517_3611941979064840177_o.600x400.jpg", 1841, "https://connect.nearstage.com/v1/openbeatz/posts/1841/");
     }
 
     private static String makeDetails(int position) {
@@ -51,29 +52,4 @@ public class NewsContent {
         return builder.toString();
     }
 
-    /**
-     * A dummy item representing a piece of content.
-     */
-    public static class NewsItem {
-        public final String id;
-        public final String content;
-        public final String url;
-        public final String type;
-        public final String datetime;
-
-        public NewsItem(String id, String content, String url, String type, String datetime) {
-            this.id = id;
-            this.content = content;
-            this.url = url;
-            this.type = type;
-            this.datetime = datetime;
-        }
-
-
-
-        @Override
-        public String toString() {
-            return content;
-        }
-    }
 }

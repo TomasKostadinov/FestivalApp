@@ -1,7 +1,5 @@
 package com.tomaskostadinov.openbeatz.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -9,26 +7,18 @@ import java.util.List;
  * Created by tomas on 05.04.17
  */
 
-public class NewsItemContainer {
+public class LineupContainer {
 
-    @SerializedName("day")
-    @Expose
     private String day;
-    @SerializedName("date")
-    @Expose
     private String date;
-    @SerializedName("last_change")
-    @Expose
     private String lastChange;
-    @SerializedName("stages")
-    @Expose
     private List<Stage> stages = null;
 
     /**
      * No args constructor for use in serialization
      *
      */
-    public NewsItemContainer() {
+    public LineupContainer() {
     }
 
     /**
@@ -38,7 +28,7 @@ public class NewsItemContainer {
      * @param stages
      * @param lastChange
      */
-    public NewsItemContainer(String day, String date, String lastChange, List<Stage> stages) {
+    public LineupContainer(String day, String date, String lastChange, List<Stage> stages) {
         super();
         this.day = day;
         this.date = date;

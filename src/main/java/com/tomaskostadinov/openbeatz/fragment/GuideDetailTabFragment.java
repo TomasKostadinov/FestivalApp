@@ -12,7 +12,8 @@ import android.view.ViewGroup;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.tomaskostadinov.openbeatz.R;
 import com.tomaskostadinov.openbeatz.helpers.ConnectRestClient;
-import com.tomaskostadinov.openbeatz.model.Day;
+import com.tomaskostadinov.openbeatz.model.Guide;
+import com.tomaskostadinov.openbeatz.model.GuideSection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,12 +28,12 @@ import cz.msebera.android.httpclient.Header;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link LineupDayFragment.OnFragmentInteractionListener} interface
+ * {@link GuideDetailTabFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link LineupDayFragment#newInstance} factory method to
+ * Use the {@link GuideDetailTabFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LineupDayFragment extends Fragment {
+public class GuideDetailTabFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -41,11 +42,12 @@ public class LineupDayFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    public String guideUrl;
 
     private FragmentTabHost mTabHost;
     private OnFragmentInteractionListener mListener;
 
-    public LineupDayFragment() {
+    public GuideDetailTabFragment() {
         // Required empty public constructor
     }
 
@@ -58,8 +60,8 @@ public class LineupDayFragment extends Fragment {
      * @return A new instance of fragment LineupDayFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LineupDayFragment newInstance(String param1, String param2) {
-        LineupDayFragment fragment = new LineupDayFragment();
+    public static GuideDetailTabFragment newInstance(String param1, String param2) {
+        GuideDetailTabFragment fragment = new GuideDetailTabFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -87,17 +89,23 @@ public class LineupDayFragment extends Fragment {
         mTabHost = (FragmentTabHost) rootView.findViewById(android.R.id.tabhost);
         mTabHost.setup(getActivity(), getChildFragmentManager(), R.id.realtabcontent);
 
-        getDays();
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            guideUrl = bundle.getString("url", "2223");
+        } else {
+            guideUrl = "https://connect.nearstage.com/v1/openbeatz/guide/1033/";
+        }
+        getGuide();
         return rootView;
+
     }
 
-    private void setTabs(List<Day> days){
-
-        for (int i = 0; i < days.size(); i++){
-            Day day = days.get(i);
+    private void setTabs(Guide guides) {
+        for (int i = 0; i < guides.getSections().size(); i++) {
+            GuideSection guide = guides.getSections().get(i);
             Bundle b = new Bundle();
-            b.putString("url", day.getStages_url());
-            mTabHost.addTab(mTabHost.newTabSpec(day.getDay()).setIndicator(day.getDay()), LineupFragment.class, b);
+            b.putString("text", guide.getContent());
+            mTabHost.addTab(mTabHost.newTabSpec(guide.getId().toString()).setIndicator(guide.getTitle()), GuideDetailFragment.class, b);
         }
     }
 
@@ -141,31 +149,45 @@ public class LineupDayFragment extends Fragment {
     }
 
 
-    public void getDays() {
-        ConnectRestClient.get("/lineup/days/", null, new JsonHttpResponseHandler() {
+    public void getGuide() {
+        ConnectRestClient.getUrl(GuideDetailTabFragment.this.guideUrl, null, new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                List<Day> l = new ArrayList<>();
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject day = response.getJSONObject(i);
-                        Day d = new Day(
-                        day.getString("day"),
-                        day.getString("date"),
-                        day.getString("last_change"),
-                        day.getString("stages_url"));
-                        l.add(d);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+            public void onSuccess(int statusCode, Header[] headers, JSONObject guide) {
+                // called when response HTTP status is "200 OK"
 
-                LineupDayFragment.this.setTabs(l);
+                try {
+                    JSONArray sections = guide.getJSONArray("sections");
+                    List<GuideSection> sectionList = new ArrayList<>();
+                    for (int a = 0; a < sections.length(); a++) {
+                        try {
+                            JSONObject section = sections.getJSONObject(a);
+                            GuideSection s = new GuideSection(
+                                    section.getInt("id"),
+                                    section.getString("title"),
+                                    section.getString("content")
+                            );
+                            sectionList.add(s);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    GuideDetailTabFragment.this.setTabs(new Guide(
+                            guide.getString("title"),
+                            guide.getString("subtitle"),
+                            guide.getString("icon"),
+                            guide.getString("type"),
+                            guide.getInt("id"),
+                            sectionList
+                    ));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {

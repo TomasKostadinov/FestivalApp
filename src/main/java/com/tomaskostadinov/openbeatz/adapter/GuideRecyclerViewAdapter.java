@@ -1,4 +1,4 @@
-package com.tomaskostadinov.openbeatz.fragment;
+package com.tomaskostadinov.openbeatz.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,12 +17,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class guideRecyclerViewAdapter extends RecyclerView.Adapter<guideRecyclerViewAdapter.ViewHolder> {
+public class GuideRecyclerViewAdapter extends RecyclerView.Adapter<GuideRecyclerViewAdapter.ViewHolder> {
 
     private final List<Guide> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public guideRecyclerViewAdapter(List<Guide> items, OnListFragmentInteractionListener listener) {
+    public GuideRecyclerViewAdapter(List<Guide> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -38,7 +38,7 @@ public class guideRecyclerViewAdapter extends RecyclerView.Adapter<guideRecycler
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).getTitle());
-        holder.mContentView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).getSubtitle());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

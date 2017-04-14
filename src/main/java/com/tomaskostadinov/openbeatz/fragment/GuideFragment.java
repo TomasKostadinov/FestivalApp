@@ -10,11 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.tomaskostadinov.openbeatz.R;
-import com.tomaskostadinov.openbeatz.fragment.dummy.DummyContent;
-import com.tomaskostadinov.openbeatz.fragment.dummy.DummyContent.DummyItem;
+import com.tomaskostadinov.openbeatz.adapter.GuideRecyclerViewAdapter;
+import com.tomaskostadinov.openbeatz.helpers.ConnectRestClient;
+import com.tomaskostadinov.openbeatz.model.Guide;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 /**
  * A fragment representing a list of Items.
@@ -29,6 +38,7 @@ public class GuideFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    public GuideRecyclerViewAdapter guideAdapter;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,8 +69,8 @@ public class GuideFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.item_guide, container, false);
-
+        View view = inflater.inflate(R.layout.fragment_guide_list, container, false);
+        guideAdapter = new GuideRecyclerViewAdapter(getGuide(), mListener);
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
@@ -70,7 +80,7 @@ public class GuideFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new guideRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(guideAdapter);
         }
         return view;
     }
@@ -105,6 +115,55 @@ public class GuideFragment extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Guide item);
     }
+
+    private List<Guide> l = new ArrayList<>();
+
+    public List<Guide> getGuide() {
+        ConnectRestClient.get("/guide/", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                // called before request is started
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                // called when response HTTP status is "200 OK"
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject guide = response.getJSONObject(i);
+                            Guide g = new Guide(
+                                    guide.getString("title"),
+                                    guide.getString("subtitle"),
+                                    guide.getString("icon"),
+                                    guide.getString("type"),
+                                    guide.getString("last_changed"),
+                                    guide.getString("sectionUrl"),
+                                    guide.getInt("id")
+                            );
+                            GuideFragment.this.l.add(g);
+                            GuideFragment.this.guideAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+            }
+
+
+            @Override
+            public void onRetry(int retryNo) {
+                // called when request is retried
+            }
+        });
+        return this.l;
+
+    }
+
+
+
 }

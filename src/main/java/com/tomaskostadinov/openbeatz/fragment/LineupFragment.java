@@ -1,4 +1,4 @@
-package com.tomaskostadinov.openbeatz;
+package com.tomaskostadinov.openbeatz.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,11 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.tomaskostadinov.openbeatz.dummy.DummyContent;
-import com.tomaskostadinov.openbeatz.dummy.DummyContent.DummyItem;
+import com.tomaskostadinov.openbeatz.adapter.LineupRecyclerViewAdapter;
+import com.tomaskostadinov.openbeatz.R;
 import com.tomaskostadinov.openbeatz.helpers.ConnectRestClient;
 import com.tomaskostadinov.openbeatz.model.Artist;
-import com.tomaskostadinov.openbeatz.model.Message;
 import com.tomaskostadinov.openbeatz.model.Stage;
 
 import org.json.JSONArray;
@@ -42,6 +41,7 @@ public class LineupFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     public LineupRecyclerViewAdapter stageAdapter;
     public boolean loaded = false;
+    public String dayId = "";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,6 +67,12 @@ public class LineupFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            dayId = bundle.getString("url", "2223");
+
+        }
+
     }
 
     @Override
@@ -126,7 +132,7 @@ public class LineupFragment extends Fragment {
     private List<Stage> l = new ArrayList<>();
 
     public List<Stage> getLineup() {
-        ConnectRestClient.get("/lineup/2223/", null, new JsonHttpResponseHandler() {
+        ConnectRestClient.getUrl(LineupFragment.this.dayId, null, new JsonHttpResponseHandler() {
             @Override
             public void onStart() {
                 // called before request is started
@@ -143,7 +149,7 @@ public class LineupFragment extends Fragment {
                             List<Artist> artistsList = new ArrayList<>();
                             try {
                                 JSONArray artists = stage.getJSONArray("artists");
-                                for (int a = 0; a < stages.length(); a++) {
+                                for (int a = 0; a < artists.length(); a++) {
                                     JSONObject artist = artists.getJSONObject(a);
                                     artistsList.add(
                                             new Artist(

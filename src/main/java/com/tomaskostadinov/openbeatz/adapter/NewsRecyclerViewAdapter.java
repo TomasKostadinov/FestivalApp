@@ -1,4 +1,4 @@
-package com.tomaskostadinov.openbeatz;
+package com.tomaskostadinov.openbeatz.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,17 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.image.SmartImageView;
-import com.tomaskostadinov.openbeatz.NewsFragment.OnListFragmentInteractionListener;
+import com.tomaskostadinov.openbeatz.R;
+import com.tomaskostadinov.openbeatz.fragment.NewsFragment.OnListFragmentInteractionListener;
 import com.tomaskostadinov.openbeatz.model.Message;
-import com.tomaskostadinov.openbeatz.news.NewsContent;
 
 import java.util.List;
-import java.util.Random;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Message} and makes a call to the

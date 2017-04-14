@@ -1,12 +1,13 @@
 <android.support.v4.app.FragmentTabHost
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/tabhost"
+    android:background="@color/colorWhite"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_marginTop="56dp"
-        android:background="@color/colorWhite"
+        android:background="@color/colorGrey"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

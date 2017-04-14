@@ -4,9 +4,11 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tomaskostadinov.openbeatz.R;
 
@@ -25,7 +27,7 @@ public class GuideDetailFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private String text;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -53,12 +55,21 @@ public class GuideDetailFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        TextView mTextView = (TextView)getView().findViewById(R.id.text);
+        mTextView.setText(Html.fromHtml(text));
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
+            text = getArguments().getString("text");
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override

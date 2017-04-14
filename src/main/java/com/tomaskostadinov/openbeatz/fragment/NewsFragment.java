@@ -1,4 +1,4 @@
-package com.tomaskostadinov.openbeatz;
+package com.tomaskostadinov.openbeatz.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.tomaskostadinov.openbeatz.adapter.NewsRecyclerViewAdapter;
+import com.tomaskostadinov.openbeatz.R;
 import com.tomaskostadinov.openbeatz.helpers.ConnectRestClient;
 import com.tomaskostadinov.openbeatz.model.Message;
 

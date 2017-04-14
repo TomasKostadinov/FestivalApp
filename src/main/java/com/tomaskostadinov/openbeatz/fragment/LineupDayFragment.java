@@ -1,4 +1,4 @@
-package com.tomaskostadinov.openbeatz;
+package com.tomaskostadinov.openbeatz.fragment;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,12 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.Gson;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.tomaskostadinov.openbeatz.R;
 import com.tomaskostadinov.openbeatz.helpers.ConnectRestClient;
 import com.tomaskostadinov.openbeatz.model.Day;
-import com.tomaskostadinov.openbeatz.model.Message;
-import com.tomaskostadinov.openbeatz.model.NewsItemContainer;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.tomaskostadinov.openbeatz.fragment.GuideFragment"
-    tools:listitem="@layout/fragment_guide" />
+    tools:listitem="@layout/item_guide" />

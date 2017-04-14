@@ -6,52 +6,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.vipulasri.timelineview.TimelineView;
+import com.github.vipulasri.timelineview.Utils;
 import com.loopj.android.image.SmartImageView;
 import com.tomaskostadinov.openbeatz.R;
-import com.tomaskostadinov.openbeatz.fragment.LineupFragment.OnListFragmentInteractionListener;
-import com.tomaskostadinov.openbeatz.model.Stage;
+import com.tomaskostadinov.openbeatz.helpers.Utilities;
+import com.tomaskostadinov.openbeatz.model.Artist;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link Stage} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * {@link RecyclerView.Adapter} that can display a {@link Artist}
  * TODO: Replace the implementation with code for your data type.
  */
-public class LineupRecyclerViewAdapter extends RecyclerView.Adapter<LineupRecyclerViewAdapter.ViewHolder> {
+public class LineupDetailRecyclerViewAdapter extends RecyclerView.Adapter<LineupDetailRecyclerViewAdapter.ViewHolder> {
 
-    private final List<Stage> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final List<Artist> mValues;
 
-    public LineupRecyclerViewAdapter(List<Stage> items, OnListFragmentInteractionListener listener) {
+    public LineupDetailRecyclerViewAdapter(List<Artist> items) {
         mValues = items;
-        mListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_stage, parent, false);
-        return new ViewHolder(view);
+
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_artist, parent, false);
+        return new ViewHolder(view, viewType);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mTitleView.setText(mValues.get(position).getTitle());
-        holder.mContentView.setText("Next: " + mValues.get(position).getNextArtistTitle());
-        holder.imageView.setImageUrl(mValues.get(position).getBackground());
+        holder.mContentView.setText(mValues.get(position).getStart());
+        //holder.imageView.setImageUrl(mValues.get(position).getImage());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
-                }
-            }
-        });
     }
 
     @Override
@@ -63,20 +53,28 @@ public class LineupRecyclerViewAdapter extends RecyclerView.Adapter<LineupRecycl
         public final View mView;
         public final TextView mTitleView;
         public final TextView mContentView;
-        public Stage mItem;
+        public Artist mItem;
         public final SmartImageView imageView;
+        public TimelineView mTimelineView;
 
-        public ViewHolder(View view) {
+
+        public ViewHolder(View view, int viewType) {
             super(view);
             mView = view;
             mTitleView = (TextView) view.findViewById(R.id.title);
             mContentView = (TextView) view.findViewById(R.id.content);
             imageView = (SmartImageView) view.findViewById(R.id.image);
+            mTimelineView = (TimelineView) view.findViewById(R.id.time_marker);
+            mTimelineView.initLine(viewType);
         }
 
         @Override
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return TimelineView.getTimeLineViewType(position,getItemCount());
     }
 }
